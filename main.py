@@ -13,12 +13,12 @@ tip_ids = [4, 8, 12, 16, 20]
 # Function to determine finger states (up or down)
 def get_finger_states(hand_landmarks):
     fingers = []
-    # Thumb: Check if thumb tip is to the left of its base (relaxed condition)
+    # Thumb: Check if thumb tip is to the left of its base (for right hand, flipped image)
     if hand_landmarks.landmark[tip_ids[0]].x < hand_landmarks.landmark[tip_ids[0]-1].x:
         fingers.append(1)
     else:
         fingers.append(0)
-    # Other fingers: Check if finger tip is above its base (original logic)
+    # Other fingers: Check if finger tip is above its base
     for i in range(1, 5):
         if hand_landmarks.landmark[tip_ids[i]].y < hand_landmarks.landmark[tip_ids[i]-2].y:
             fingers.append(1)
@@ -32,22 +32,14 @@ def is_thumbs_down(hand_landmarks):
     thumb_tip = hand_landmarks.landmark[tip_ids[0]]
     # Calculate angle between wrist and thumb tip
     angle = math.degrees(math.atan2(thumb_tip.y - wrist.y, thumb_tip.x - wrist.x))
-    # Thumbs Down: Downward tilt between 20 and 130 degrees
-    return 20 < angle < 130
+    # Thumbs Down typically has a downward tilt (angle > 45 degrees)
+    return angle > 45
 
-# Function to detect specific gestures with overlap prevention
+# Function to detect specific gestures
 def detect_gesture(fingers, hand_landmarks, w, h):
-    # Hi: All fingers up, check for moderate spread
+    # Hi: All fingers up (open hand)
     if fingers == [1, 1, 1, 1, 1]:
-        # Check distance between index and pinky tips
-        index_tip = hand_landmarks.landmark[tip_ids[1]]
-        pinky_tip = hand_landmarks.landmark[tip_ids[4]]
-        distance = math.sqrt(
-            ((index_tip.x * w - pinky_tip.x * w) ** 2) +
-            ((index_tip.y * h - pinky_tip.y * h) ** 2)
-        )
-        if distance > 50:  # Relaxed threshold for finger spread
-            return "Hi"
+        return "Hi"
     # Thumbs Up: Thumb up, other fingers down, not tilted downward
     elif fingers == [1, 0, 0, 0, 0] and not is_thumbs_down(hand_landmarks):
         return "Thumbs Up"
