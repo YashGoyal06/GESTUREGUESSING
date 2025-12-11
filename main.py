@@ -4,7 +4,7 @@ import pyautogui
 import time
 import math
 
-# Initialize MediaPipe Hands
+
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7)
 mp_draw = mp.solutions.drawing_utils
@@ -151,3 +151,4 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 print("Webcam released and windows closed.")
+
