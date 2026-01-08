@@ -1,4 +1,4 @@
-# ✋ Hand Gesture Recognition
+# Hand Gesture Recognition
 
 This Python script utilizes **OpenCV** and **MediaPipe** to detect a human hand, recognize various hand gestures, and display the detected gesture in real-time using a webcam feed.
 
